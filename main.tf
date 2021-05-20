@@ -2,7 +2,6 @@ terraform {
   required_providers {
     external = {
       source = "hashicorp/external"
-      #version = "20.1.4"
     }
     avi = {
       source = "vmware/avi"
@@ -83,15 +82,11 @@ resource "avi_pool" "tier_2_pool" {
   cloud_ref = data.avi_cloud.vsphere_cloud.id
   health_monitor_refs = [data.avi_healthmonitor.system_http.id]
   name = "t2-vs2_pool"
-  # networks = {
-  #     network_ref = "https://localhost/api/vimgrnwruntime/dvportgroup-97-cloud-59713db1-0692-4043-934e-fa60d7a7b9df"
-  # }
   servers {
     ip {
       addr = var.webserver1_ip
       type = "V4"
       }
-    #"nw_ref" = "https://localhost/api/vimgrnwruntime/dvportgroup-97-cloud-59713db1-0692-4043-934e-fa60d7a7b9df"
     port = 80
   }
   servers {
