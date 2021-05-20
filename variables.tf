@@ -1,0 +1,17 @@
+variable "avi_username" {}
+variable "avi_password" {}
+variable "avi_tenant" {}
+variable "avi_version" {}
+variable "avi_controller" {}
+variable "tier_1_vrf" {}
+variable "tier_2_vrf" {}
+variable "server_subnet" {}
+variable "front_end_subnet" {}
+variable "vs_ip" {}
+variable "t2_portgroup" {}
+variable "t1_portgroup" {}
+variable "front_end_subnet_mask" {}
+variable "server_subnet_mask" {}
+variable "webserver1_ip" {}
+variable "webserver2_ip" {}
+variable "avi_cloud" {}
