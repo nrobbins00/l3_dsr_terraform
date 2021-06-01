@@ -15,3 +15,6 @@ variable "server_subnet_mask" {}
 variable "webserver1_ip" {}
 variable "webserver2_ip" {}
 variable "avi_cloud" {}
+variable "vip_portgroup" {}
+variable "vip_subnet" {}
+variable "vip_subnet_mask" {}

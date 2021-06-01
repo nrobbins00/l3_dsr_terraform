@@ -4,6 +4,7 @@ import urllib3
 urllib3.disable_warnings()
 import sys
 import json
+import time
 
 tenant = "admin"
 
@@ -29,7 +30,16 @@ def main():
     mydict = {}
     vs_inv_url = f"{base_url}/api/virtualservice-inventory"
     urls = []
+    for i in range(1,20):
+        resp = api.get(vs_inv_url, headers=headers, params={"name":jsondata['vs_name']}).json()
+        if resp['results'][0]['runtime']['vip_summary'][0]['num_se_assigned'] == 2 and resp['results'][0]['runtime']['vip_summary'][0]['percent_ses_up'] == 100:
+            break
+        else:
+            print("SEs not ready yet, sleeping 30s")
+            time.sleep(30)    
     resp = api.get(vs_inv_url, headers=headers, params={"name":jsondata['vs_name']}).json()
+    #print(resp)
+    mydict["vs_ip"] = resp['results'][0]['config']['vip'][0]['ip_address']['addr']
     for se in resp['results'][0]['runtime']['vip_summary'][0]['service_engine']:
         urls.append(se['url'])
     for idx, url in enumerate(urls):
