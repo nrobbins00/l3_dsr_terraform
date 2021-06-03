@@ -35,7 +35,7 @@ def main():
         if resp['results'][0]['runtime']['vip_summary'][0]['num_se_assigned'] == 2 and resp['results'][0]['runtime']['vip_summary'][0]['percent_ses_up'] == 100:
             break
         else:
-            print("SEs not ready yet, sleeping 30s")
+            #print("SEs not ready yet, sleeping 30s")
             time.sleep(30)    
     resp = api.get(vs_inv_url, headers=headers, params={"name":jsondata['vs_name']}).json()
     #print(resp)
