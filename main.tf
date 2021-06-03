@@ -70,7 +70,7 @@ resource "avi_serviceenginegroup" "tier_2_seg" {
   ha_mode = "HA_MODE_SHARED_PAIR"
   max_vs_per_se = 1
   min_scaleout_per_vs = 2
-  name = "SEG-Tier-2"
+  name = "SEG-Tier-2-${var.app_name}"
   per_app = true
   realtime_se_metrics {
     enabled = false
@@ -78,7 +78,7 @@ resource "avi_serviceenginegroup" "tier_2_seg" {
   se_dos_profile {
     thresh_period = 5
   }
-  se_name_prefix = "T2Avi"
+  se_name_prefix = "${var.app_name}_T2"
   tenant_ref = data.avi_tenant.admin_tenant.id
 }
 
@@ -86,7 +86,7 @@ resource "avi_serviceenginegroup" "tier_2_seg" {
 resource "avi_pool" "tier_2_pool" {
   cloud_ref = data.avi_cloud.vsphere_cloud.id
   health_monitor_refs = [data.avi_healthmonitor.system_http.id]
-  name = "t2-vs2_pool"
+  name = "${var.app_name}-t2_pool"
   # networks = {
   #     network_ref = "https://localhost/api/vimgrnwruntime/dvportgroup-97-cloud-59713db1-0692-4043-934e-fa60d7a7b9df"
   # }
@@ -112,7 +112,7 @@ resource "avi_pool" "tier_2_pool" {
 
 resource "avi_vsvip" "tier_2_vsvip" {
   cloud_ref = data.avi_cloud.vsphere_cloud.id
-  name = "vsvip-T2-VS-Default-Cloud"
+  name = "vsvip-${var.app_name}-T2"
   tenant_ref = data.avi_tenant.admin_tenant.id
   vip {
     vip_id = 1
@@ -161,7 +161,7 @@ resource "avi_virtualservice" "tier_2_vs" {
   }
   cloud_type = "CLOUD_VCENTER"
   enable_autogw = false
-  name = "T2-VS"
+  name = "${var.app_name}-T2"
   pool_ref = avi_pool.tier_2_pool.id
   se_group_ref = avi_serviceenginegroup.tier_2_seg.id
   services {
@@ -189,7 +189,7 @@ data "external" "se_ip_addresses" {
     user = var.avi_username
     password = var.avi_password
     controller = var.avi_controller
-    vs_name = "T2-VS"
+    vs_name = "${var.app_name}-T2"
   }
 }
 
@@ -198,7 +198,10 @@ data "external" "se_ip_addresses" {
 
 
 output "se_interfaces" {
-    value = data.external.se_ip_addresses.result.se0
+    value = [data.external.se_ip_addresses.result.se0,
+             data.external.se_ip_addresses.result.se0,
+             data.external.se_ip_addresses.result.vs_ip
+    ]
 }
 
 resource "avi_serviceenginegroup" "tier_1_seg" {
@@ -209,7 +212,7 @@ resource "avi_serviceenginegroup" "tier_1_seg" {
   ha_mode = "HA_MODE_SHARED_PAIR"
   max_vs_per_se = 1
   min_scaleout_per_vs = 2
-  name = "SEG-Tier-1"
+  name = "SEG-Tier-1-${var.app_name}"
   per_app = true
   realtime_se_metrics {
     enabled = false
@@ -217,7 +220,7 @@ resource "avi_serviceenginegroup" "tier_1_seg" {
   se_dos_profile {
     thresh_period = 5
   }
-  se_name_prefix = "T1Avi"
+  se_name_prefix = "${var.app_name}_T1"
   tenant_ref = data.avi_tenant.admin_tenant.id
 }
 
@@ -229,7 +232,7 @@ resource "avi_pool" "tier_1_pool" {
     type = "FAIL_ACTION_CLOSE_CONN"
   }
   lb_algorithm = "LB_ALGORITHM_CONSISTENT_HASH"
-  name = "T1-VS-pool"
+  name = "${var.app_name}-t1_pool"
   placement_networks {
     network_ref = data.avi_network.t1_portgroup.id
     subnet {
@@ -263,7 +266,7 @@ resource "avi_pool" "tier_1_pool" {
 
 resource "avi_vsvip" "tier_1_vsvip" {
   cloud_ref = data.avi_cloud.vsphere_cloud.id
-  name = "vsvip-T1-VS-Default-Cloud"
+  name = "vsvip-${var.app_name}-T1"
   tenant_ref = data.avi_tenant.admin_tenant.id
   vip {
     ip_address {
@@ -300,7 +303,7 @@ resource "avi_virtualservice" "tier_1_vs" {
   }
   application_profile_ref = data.avi_applicationprofile.l4_app.id
   cloud_type = "CLOUD_VCENTER"
-  name = "T1-VS"
+  name = "${var.app_name}-T1"
   ign_pool_net_reach = true
   enable_rhi = true
   network_profile_ref = data.avi_networkprofile.l3_dsr.id

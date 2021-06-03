@@ -17,3 +17,4 @@ avi_cloud = "Default-Cloud"
 vip_portgroup = "vip_pg"
 vip_subnet = "10.0.40.0"
 vip_subnet_mask = 24
+app_name = "myapp"

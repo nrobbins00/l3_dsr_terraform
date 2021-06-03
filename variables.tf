@@ -18,3 +18,4 @@ variable "avi_cloud" {}
 variable "vip_portgroup" {} ## name of vsphere port group for portgroup associated with VIP range
 variable "vip_subnet" {} # subnet in dotted decimal for VIPs (ex. 10.10.10.0)
 variable "vip_subnet_mask" {} # subnet mask in slash notation (integer, ex. 24)
+variable "app_name" {}
